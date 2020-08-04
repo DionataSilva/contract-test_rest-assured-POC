@@ -9,8 +9,7 @@ import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
@@ -20,12 +19,16 @@ public class AppTest {
     @BeforeClass
     public static void setup() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        baseURI = "https://reqres.in";
+        basePath = "/api";
     }
 
     @Test
     public void listUserWithStatusOK() {
+        given().
+                params("page", 2).
         when().
-                get("https://reqres.in/api/users?page=2").
+                get("/users").
         then().
                 statusCode(HttpStatus.SC_OK).
                 body("page", is(2)).
@@ -41,7 +44,7 @@ public class AppTest {
                         "    \"job\": \"Developer\"\n" +
                         "}").
         when().
-                post("https://reqres.in/api/users")
+                post("/users")
         .then().
                 statusCode(HttpStatus.SC_CREATED).
                 body("name", is("Dionata"));
